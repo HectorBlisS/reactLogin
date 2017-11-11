@@ -1,13 +1,14 @@
 import React from 'react';
 
-export const LoginDisplay = ({changeRegistro, mostrar, toggleMostrar, saveInput, onSubmit, error}) => (
+export const RegistroDisplay = ({mostrar, toggleMostrar, saveRegistro, onSubmit, error, email, password, password2}) => (
 		<div>
 			<form onSubmit={onSubmit} className="formulario">
 			<h2>{error}</h2>
 				<label>
 					<input 
 						name="email"
-						onChange={saveInput}
+						onChange={saveRegistro}
+						value={email}
 						placeholder="Tu correo electronico"
 						type="text"
 					/>
@@ -16,8 +17,19 @@ export const LoginDisplay = ({changeRegistro, mostrar, toggleMostrar, saveInput,
 				<label>
 					<input 
 						name="password"
-						onChange={saveInput}
+						value={password}
+						onChange={saveRegistro}
 						placeholder="Tu contraseña"
+						type={mostrar ? "text" : "password" }
+					/>
+				</label>
+
+				<label>
+					<input 
+						name="password2"
+						value={password2}
+						onChange={saveRegistro}
+						placeholder="Confirmar contraseña"
 						type={mostrar ? "text" : "password" }
 					/>
 				</label>
@@ -32,21 +44,9 @@ export const LoginDisplay = ({changeRegistro, mostrar, toggleMostrar, saveInput,
 				</label>
 				<input 
 					type="submit" 
-					value="Iniciar Sesión"
+					value="Registrarse"
 				/>
 
-				<p>
-					¿Aún no tienes cuenta?
-					<a onClick={changeRegistro} href="#!">
-						registrate
-					</a>
-				</p>
-				<p>
-					¿Olvidaste tu contraseña?
-					<a href="#!">
-						Recuperar
-					</a>
-				</p>
 			</form>
 		</div>
 	);

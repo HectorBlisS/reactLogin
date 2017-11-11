@@ -1,4 +1,5 @@
 @import './components/login/login.css';
+@import './components/perfil/perfil.css';
 
 .App {
   text-align: center;

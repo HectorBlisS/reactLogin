@@ -1,0 +1,35 @@
+.user-info{
+	/*centrado*/
+	max-width: 600px;
+	margin:0 auto;
+	position: relative;
+	background-color: lightgrey;
+	padding:40px;
+	/*posicionamiento*/
+	display: flex;
+	justify-content:space-between;
+}
+
+.user-info img{
+	border-radius: 50%;
+	cursor: pointer;
+	max-width: 200px;
+	max-height:200px;
+}
+
+.user-info h2{
+	font-size: 200%;
+	font-weight: lighter;
+	text-transform: uppercase;
+	display: inline;
+}
+
+.user-info button{
+	border-radius: 3px;
+	outline: none;
+	border:none;
+	padding: 5px 20px;
+	background-color: #3897f0;
+	color:white;
+}
+
