@@ -1,5 +1,6 @@
 @import './components/login/login.css';
 @import './components/perfil/perfil.css';
+@import './components/products/productList/product-list.css';
 
 .App {
   text-align: center;
