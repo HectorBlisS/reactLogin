@@ -1,9 +1,14 @@
 import React, {Component} from 'react';
 import {ProductListDisplay} from './ProductListDisplay';
+import firebase from '../../../firebase';
+import toastr from 'toastr';
 
 class ProductListContainer extends Component{
 
     state = {
+        errors:{},
+        newProduct:{},
+        openForm:false,
         products:[
             {
                 id:0,
@@ -28,11 +33,78 @@ class ProductListContainer extends Component{
         ]
     };
 
+    componentWillMount(){
+        let products = this.state.products;
+        firebase.database().ref("products")
+          .on("child_added", snap=>{
+              let nino = snap.val();
+              nino["photos"] = ["link"];
+              products.push(nino);
+              this.setState({products});
+          })
+    };
+
+    onClose = () => {
+        this.setState({openForm:false});
+    };
+
+    onOpen = () => {
+        this.setState({openForm:true});
+    };
+
+    onChangeForm = (e) => {
+        let newProduct = this.state.newProduct;
+        const field = e.target.name;
+        const value = e.target.value;
+        newProduct[field] = value;
+        this.setState({newProduct});
+        console.log(newProduct);
+    };
+
+    validateForm = () => {
+        let newProduct = this.state.newProduct;
+        let errors = this.state.errors;
+        let isOk = true;
+        if (newProduct.desc.length > 30) {
+            errors["desc"] = "Solo 30 caracteres";
+            isOk = false;
+        }
+        if(isNaN(newProduct.price)){
+            errors["price"] = "Escribe un numero"
+            isOk = false;
+        }
+        this.setState({errors});
+        return isOk;
+    };
+
+    onSave = (e) => {
+        e.preventDefault();
+        if(this.validateForm()){
+            firebase.database().ref("products")
+                .push(this.state.newProduct)
+                .then(r=>{
+                    toastr.success("Guardé tu producto");
+                    this.setState({openForm:false});
+                })
+                .catch(e=>{
+                    toastr.error("Error perro: ", e.message);
+                });
+        }else{
+            alert("hay errores");
+        }
+    };
+
     render(){
-        const {products} = this.state;
+        const {products, openForm, errors} = this.state;
         return(
             <ProductListDisplay
                 products={products}
+                openForm={openForm}
+                onClose={this.onClose}
+                onOpen={this.onOpen}
+                onChangeForm={this.onChangeForm}
+                errors={errors}
+                onSave={this.onSave}
             />
         );
     }

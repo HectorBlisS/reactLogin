@@ -29,6 +29,7 @@
     background: rgba(0,0,0,0.5);
     width: calc(100% - 20px);
     height: 38px;
+    text-transform: uppercase;
 }
 
 .product-container aside p{
