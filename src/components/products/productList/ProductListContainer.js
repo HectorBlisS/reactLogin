@@ -39,9 +39,29 @@ class ProductListContainer extends Component{
           .on("child_added", snap=>{
               let nino = snap.val();
               nino["photos"] = ["link"];
+              nino["id"] = snap.key;
               products.push(nino);
               this.setState({products});
-          })
+          });
+
+        firebase.database().ref("products")
+            .on("child_removed", snap=>{
+               let id = snap.key;
+               products = products.filter(p=>p.id !== id);
+               this.setState({products});
+            });
+
+    };
+
+    remove = (id) => {
+        if(window.confirm("Estas seguro de esto?")){
+            firebase.database().ref("products")
+                .child(id)
+                .remove()
+                .then(r=>toastr.warning("Se borro!"))
+                .catch(e=>toastr.error("no se borró"));
+        }
+
     };
 
     onClose = () => {
@@ -105,6 +125,7 @@ class ProductListContainer extends Component{
                 onChangeForm={this.onChangeForm}
                 errors={errors}
                 onSave={this.onSave}
+                remove={this.remove}
             />
         );
     }

@@ -7,12 +7,12 @@ import {FloatingActionButton, Dialog, TextField} from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
 
-export const ProductListDisplay = ({onSave, errors, onChangeForm, onOpen, onClose, products, openForm}) => {
+export const ProductListDisplay = ({remove, onSave, errors, onChangeForm, onOpen, onClose, products, openForm}) => {
     return (
         <section>
             <h2>Lista de Productos:</h2>
             <article className="product-container" >
-                {products.map((p, index)=><ProductCard key={index} {...p}/>)}
+                {products.map((p, index)=><ProductCard remove={remove} key={index} {...p}/>)}
             </article>
 
             <FloatingActionButton
