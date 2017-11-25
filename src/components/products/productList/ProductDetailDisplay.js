@@ -3,10 +3,10 @@ import lupe from '../../../assets/bici.jpg';
 import FontAwesome from 'react-fontawesome';
 
 
-export const ProductDetailDisplay = ({onOpen, name="Mi bici rota", desc="la bici esta rota ya no la quiero pro eso la vendo"}) => (
+export const ProductDetailDisplay = ({photos, onOpen, name="Mi bici rota", desc="la bici esta rota ya no la quiero pro eso la vendo"}) => (
 		<section>
 
-			<article style={{backgroundImage:`url(${lupe})`}} className="detail-hero">
+			<article style={{backgroundImage:`url(${photos ? photos[0]:lupe})`}} className="detail-hero">
 				<button>
 					Comprar
 				</button>

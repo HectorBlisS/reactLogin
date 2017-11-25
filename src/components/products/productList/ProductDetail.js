@@ -2,13 +2,14 @@ import React, {Component} from 'react';
 import {ProductDetailDisplay} from './ProductDetailDisplay';
 import {getProductById, updateProductById} from '../../../api/google';
 //import {getProductById} from '../../../api/php';
-
+import firebase from '../../../firebase';
 import toastr from 'toastr';
 import {ProductForm} from './ProductForm';
 
 class ProductDetail extends Component{
 
 	state = {
+		file:null,
 		product:{},
 		openForm:false,
 		errors:{}
@@ -31,12 +32,34 @@ class ProductDetail extends Component{
         //console.log(newProduct);
     };
 
+    onChangeFile = (e) => {
+    	const file = e.target.files[0];
+    	this.setState({file});
+    };
+
     onSave = (e) => {
     	e.preventDefault();
     	this.setState({openForm:false});
     	const id = this.props.match.params.id;
-    	updateProductById(id, this.state.product)
-    	.then(()=>toastr.success("Tu producto se actualizo"));
+    	let product = this.state.product;
+    	//subimos imagen
+    	if(this.state.file){
+    		firebase.storage()
+    			.ref(id)
+    			.child(this.state.file.name)
+    			.put(this.state.file)
+    			.then(s=>{
+    				const link = s.downloadURL;
+    				console.log(link);
+    				product["photos"] = [link];
+    				//actualizamos db
+    				updateProductById(id, product)
+    					.then(()=>toastr.success("Tu producto se actualizo"));
+    				this.setState({product});
+    			})
+    	}
+    	//submimos imagen
+    	
     };
 
 	componentWillMount(){
@@ -59,6 +82,7 @@ class ProductDetail extends Component{
 
 					/>
 					<ProductForm
+						onChangeFile={this.onChangeFile}
 						{...product}
                 		openForm={openForm}
                 		onClose={this.onClose}

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Dialog, TextField} from 'material-ui';
 
-export const ProductForm = ({openForm, onClose, onSave, onChangeForm, errors, name, desc, price}) => {
+export const ProductForm = ({onChangeFile, openForm, onClose, onSave, onChangeForm, errors, name, desc, price}) => {
 	return(
 
             <Dialog
@@ -36,7 +36,9 @@ export const ProductForm = ({openForm, onClose, onSave, onChangeForm, errors, na
                         errorText={errors.price}
                     />
                     <TextField
-                        onChange={onChangeForm}
+                        type="file"
+                        accept="image/*"
+                        onChange={onChangeFile}
                         name="photo"
                         floatingLabelText="Foto"
                         errorText={errors.photo}

@@ -6,6 +6,7 @@ import toastr from 'toastr';
 class ProductListContainer extends Component{
 
     state = {
+        file:null,
         errors:{},
         newProduct:{},
         openForm:false,
@@ -14,21 +15,13 @@ class ProductListContainer extends Component{
                 id:0,
                 name:"Bicicleta",
                 desc:"muy rosa",
-                price:1200,
-                photos:[
-                    "link",
-                    "link2"
-                ]
+                price:1200
             },
             {
                 id:1,
                 name:"Computadora",
                 desc:"vaio",
-                price:12000,
-                photos:[
-                    "link",
-                    "link2"
-                ]
+                price:12000
             }
         ]
     };
@@ -38,7 +31,7 @@ class ProductListContainer extends Component{
         firebase.database().ref("products")
           .on("child_added", snap=>{
               let nino = snap.val();
-              nino["photos"] = ["link"];
+              //if(!nino.photos) nino["photos"] = ["link"];
               nino["id"] = snap.key;
               products.push(nino);
               this.setState({products});
@@ -81,6 +74,11 @@ class ProductListContainer extends Component{
         console.log(newProduct);
     };
 
+    onChangeFile = (e) => {
+        const file = e.target.files[0];
+        this.setState({file})
+    };
+
     validateForm = () => {
         let newProduct = this.state.newProduct;
         let errors = this.state.errors;
@@ -103,6 +101,23 @@ class ProductListContainer extends Component{
             firebase.database().ref("products")
                 .push(this.state.newProduct)
                 .then(r=>{
+                    if(this.state.file){
+                        //este es el hack
+                        let updates = {};
+                        //este es el hack
+                        firebase.storage()
+                        .ref(r.key)
+                        .child(this.state.file.name)
+                        .put(this.state.file)
+                        .then(s=>{
+                            const link = s.downloadURL;
+                            let newProduct = this.state.newProduct;
+                            newProduct["photos"] = [link];
+                            updates[`/products/${r.key}`] = newProduct;
+                            firebase.database().ref().update(updates);
+                        });
+                    }
+                    
                     toastr.success("Guardé tu producto");
                     this.setState({openForm:false});
                 })
@@ -118,6 +133,7 @@ class ProductListContainer extends Component{
         const {products, openForm, errors} = this.state;
         return(
             <ProductListDisplay
+                onChangeFile={this.onChangeFile}
                 products={products}
                 openForm={openForm}
                 onClose={this.onClose}
