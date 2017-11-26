@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import {ProductCard} from "./ProductCard";
-import {FloatingActionButton, Dialog, TextField} from 'material-ui';
+import {FloatingActionButton} from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import {ProductForm} from './ProductForm';
 
@@ -39,9 +39,4 @@ export const ProductListDisplay = ({onChangeFile, remove, onSave, errors, onChan
     );
 };
 
-//ProductListDisplay.propTypes = {};
-
-const styles = {
-    name: {}
-};
 

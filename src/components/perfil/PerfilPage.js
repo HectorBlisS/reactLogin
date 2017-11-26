@@ -12,7 +12,8 @@ class PerfilPage extends Component{
 			nombre:null,
 			email:null,
 			imagen:null
-		}
+		},
+		completed:100
 	};
 
 	componentWillMount(){
@@ -41,19 +42,21 @@ class PerfilPage extends Component{
 	changePic = (e) => {
 		let usuario = this.state.usuario;
 		const file = e.target.files[0];
-		console.log(file);
-		firebase.storage()
-			.ref("imagenes")
-			.child("profilePic" + usuario.id)
-			.put(file)
-			.then(s=>{
-				alert("subi el archivo", s.downloadURL);
-				console.log(s.downloadURL);
-				usuario.imagen = s.downloadURL;
-				this.setState({usuario});
-				this.guardarPerfil(usuario);
-				})
-			.catch(e=>console.log(e));
+		const task = firebase.storage().ref("imagenes").child("profilePic" + usuario.id).put(file);
+		//console.log(file);
+
+		task.on("state_changed", s=>{
+			const completed = (s.bytesTransferred / s.totalBytes) * 100;
+			console.log(completed)
+			this.setState({completed});
+		},e=>console.log(e),()=>{
+					//alert("subi el archivo", task.snapshot.downloadURL);
+					//console.log(task.snapshot.downloadURL);
+					usuario.imagen = task.snapshot.downloadURL;
+					this.setState({usuario});
+					this.guardarPerfil(usuario);
+				});
+		
 	};
 
 	guardarPerfil = (usuario) => {
@@ -64,6 +67,7 @@ class PerfilPage extends Component{
 		return(
 				<div>
 					<PerfilDisplay 
+						completed={this.state.completed}
 						changePic={this.changePic}
 						{...this.state.usuario}
 					/>
